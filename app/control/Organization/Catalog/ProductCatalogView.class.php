@@ -30,6 +30,10 @@ class ProductCatalogView extends TPage
         $this->setDatabase('samples');
         $this->setActiveRecord('Product');
         $this->addFilterField('description');
+        $this->setLimit(12);
+
+
+      
         
         // creates the form
         $this->form = new BootstrapFormBuilder('form_search_Product');
@@ -39,15 +43,16 @@ class ProductCatalogView extends TPage
         $description = new TEntry('description');
         TTransaction::open('samples');
 
-        $products = Product::getIndexedArray('id', 'description');
+        $products = Product::getIndexedArray('key:{id}', '{description} <b>R$ {sale_price}</b>');
         $description->setCompletion( array_values( $products ));
-        $description->setSize('80%');
+        $description->setSize('100%');
         $description->placeholder = 'Pesquise aqui...';
 
         TTransaction::close();
         $button = TButton::create('action1', [$this, 'onSearch'], 'Buscar', 'fa:search blue');
-       $row =  $this->form->addFields(  [$description], [$button] );
-       $row->layout = ['col-sm-10', 'col-sm-2' ];
+        $this->form->addFields(  [$description]  );
+        $this->form->addFields(  [$button]  );
+      // $row->layout = ['col-sm-10', 'col-sm-2' ];
       
        // $this->form->addAction('Buscar', new TAction([$this, 'onSearch']), 'fa:search blue');
        // $this->form->addActionLink( 'Limpar pesquisa', new TAction([$this, 'onClear']), 'fa:eraser red');
@@ -63,17 +68,19 @@ class ProductCatalogView extends TPage
 		
 		$this->setCollectionObject($this->cards);
 		
-		$this->cards->setItemTemplate('<div style="float:left;width:50%;padding-right:10px">
-		                                    <br>° {description} <br>
-                                            <hr>
-		                                  
-		                                    <br>   <div id = "preco">R$  {sale_price} </div>
-		                               </div>
-		                               <div style="float:right;width:50%">
-		                                   <img style="height:100px;float:right;margin:5px" src="{photo_path}">
-		                               </div> ');
+		$this->cards->setItemTemplate('<div class="card" style="width: 18rem;">
+    <img class="card-img-top" src="{photo_path}">
+    <div class="card-body">
+      <h5 class="card-title">{description}</h5>
+      <hr>
+      <p class="card-text"> R$ {sale_price}</p>
+
+     
+      <a generator="adianti" href="index.php?class=ProductCatalogView&method=onSelect&id={id}" class="btn btn-primary">+ adicionar</a>
+    </div>
+  </div>');
         
-		$this->cards->addAction(new TAction([$this, 'onSelect'], ['id' => '{id}']),  'Adicionar', 'fa:plus white');
+	//	$this->cards->addAction(new TAction([$this, 'onSelect'], ['id' => '{id}']),  'Adicionar', 'fa:plus white');
 		
         // creates the page navigation
         $this->pageNavigation = new TPageNavigation;
@@ -125,9 +132,28 @@ class ProductCatalogView extends TPage
         AdiantiCoreApplication::loadPage('CartManagementView', 'onReload', [ 'register_state' => 'false']);
     }
 
-    public function onClear()
+    public function onSearchMenu($param)
     {
       
-      $this->onSearch();
+      if(isset($param['texto'])){
+
+        $filter = new TFilter('description', 'like', "%{$param['texto']}%");
+
+        TSession::setValue($this->activeRecord.'_filter_'.'description', $filter);
+
+        $this->onReload( ['offset'=>0, 'first_page'=>1] );
+
+
+      }else{
+
+        TSession::setValue($this->activeRecord.'_filter_'.'description', NULL);
+
+       
+
+        $this->onSearch($param = null);
+
+      }
     }
+
+
 }

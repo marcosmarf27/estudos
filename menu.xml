@@ -21,6 +21,10 @@
                         <icon>fa:database fa-fw</icon>
                         <action>ManualConnectionView</action>
                     </menuitem>
+                     <menuitem label='Sessões'>
+                        <icon>fa:database fa-fw</icon>
+                        <action>SystemSessionDumpView</action>
+                    </menuitem>
                 </menu>
             </menuitem>
             

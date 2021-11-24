@@ -22,6 +22,16 @@
                 <icon>far:circle fa-fw</icon>
                 <action>HomeView#method=onLoad#menu=Persistence#submenu=Relationships</action>
             </menuitem>
+
+                <menuitem label='Sessões'>
+                        <icon>fa:database fa-fw</icon>
+                        <action>SystemSessionDumpView</action>
+                    </menuitem>
+
+                    <menuitem label='busca'>
+                        <icon>fa:database fa-fw</icon>
+                        <action>ProductCatalogView#method=onSearchMenu#texto=calabre</action>
+                    </menuitem>
         </menu>
     </menuitem>
             

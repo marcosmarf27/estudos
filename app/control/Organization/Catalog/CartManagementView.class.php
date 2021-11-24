@@ -1,6 +1,8 @@
 <?php
 
+use Adianti\Registry\TSession;
 use Adianti\Widget\Base\TScript;
+use Adianti\Widget\Dialog\TMessage;
 use Adianti\Widget\Form\TSpinner;
 
 class CartManagementView extends TPage
@@ -10,6 +12,11 @@ class CartManagementView extends TPage
     public function __construct()
     {
         parent::__construct();
+
+
+        if (!parent::isMobile()){
+            parent::setTargetContainer('adianti_right_panel');
+          }
         
        // parent::setTargetContainer("adianti_right_panel");
 
@@ -20,18 +27,18 @@ class CartManagementView extends TPage
         $this->datagrid->disableDefaultClick();
 
         $column_amount = new TDataGridColumn('amount',  'Qtd',  'right',   '40%');
-        $column_price = new TDataGridColumn('sale_price', 'Preço', 'right',   '15%');
+        $column_price = new TDataGridColumn('sale_price', 'Preço', 'right',   '25%');
 
-        $column_id = new TDataGridColumn('id',  'ID',  'center', '10%');
+        $column_id = new TDataGridColumn('id',  'ID',  'center', '5%');
         
         // add the columns
         $this->datagrid->addColumn( $column_id );
-        $this->datagrid->addColumn( new TDataGridColumn('description',  'Descrição',  'left',   '25%') );
+        $this->datagrid->addColumn( new TDataGridColumn('description',  'Descrição',  'left',   '30%') );
         $this->datagrid->addColumn( $column_amount );
         $this->datagrid->addColumn(  $column_price);
         
         $action1 = new TDataGridAction([$this, 'onDelete'],   ['id'=>'{id}' ] );
-        $action1->setUseButton(TRUE);
+       // $action1->setUseButton(TRUE);
         $this->datagrid->addAction($action1, 'Excluir', 'far:trash-alt red');
 
         $column_id->setVisibility(false);
@@ -67,8 +74,10 @@ class CartManagementView extends TPage
         // creates the datagrid model
         $this->datagrid->createModel();
 
-     /*    $button = TButton::create('action1', [$this, 'onClose'], 'Save', 'fa:save green');
-        $this->form->addField($button); */
+       /*  $button = TButton::create('action1', [$this, 'onClose'], 'Cancelar', 'fa:window-close');
+        $button->setFormName('form_search_Product'); */
+       
+        
      
         
         $back = new TActionLink('adicionar mais itens', new TAction(array($this, 'onClose')), 'black', null, null, 'fa:plus green');
@@ -81,6 +90,7 @@ class CartManagementView extends TPage
         $this->form->add($panel);
         
         parent::add($panel);
+        
     }
     
     /**
@@ -91,6 +101,16 @@ class CartManagementView extends TPage
         $cart_items = TSession::getValue('cart_items');
         unset($cart_items[ $param['key'] ]);
         TSession::setValue('cart_items', $cart_items);
+
+        $itens = count(TSession::getValue('cart_items'));
+
+        /*      echo '<pre>';
+     
+             print_r($param);
+             print_r($cart_items);
+     
+             echo '</pre>'; */
+             TScript::create("$( '#carrinho' ).html( '{$itens}' );");
         
         $this->onReload();
     }
@@ -180,5 +200,12 @@ class CartManagementView extends TPage
         TScript::create("$( '#carrinho' ).html( '{$itens}' );");
         
         AdiantiCoreApplication::loadPage('CartManagementView', 'onReload', ['register_state' => 'false']);
+    }
+
+    public static function cancelar(){
+
+        new TMessage('info', 'Itens apagados com sucesso!');
+        TSession::delValue('cart_items');
+        AdiantiCoreApplication::loadPage('ProductCatalogView', '', [ 'register_state' => 'false']);
     }
 }

@@ -60,7 +60,7 @@ class SaleForm extends TWindow
         
         // add validations
         $date->addValidation('Date', new TRequiredValidator);
-        $customer_id->addValidation('Customer', new TRequiredValidator);
+      //  $customer_id->addValidation('Customer', new TRequiredValidator);
         
         // change action
         $product_detail_product_id->setChangeAction(new TAction([$this,'onProductChange']));
