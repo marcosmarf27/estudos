@@ -1405,7 +1405,7 @@ a.nav-link:not(.active):hover {
 	color:#4caf50 !important;
 }
 
-a#view-source .fas{
+a#view .fas{
 	top:13px;
 	position:relative;
 }
@@ -1459,7 +1459,7 @@ body .main-footer{
 	font-size:19.1px !important;
 }
 
-a#view-source{
+a#view{
 	bottom:150px;
 }
 
