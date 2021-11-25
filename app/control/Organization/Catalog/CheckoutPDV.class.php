@@ -1,7 +1,12 @@
 <?php
 
+use Adianti\Control\TAction;
 use Adianti\Control\TWindow;
 use Adianti\Widget\Form\TRadioGroup;
+use Adianti\Widget\Datagrid\TDataGrid;
+use Adianti\Wrapper\BootstrapFormBuilder;
+use Adianti\Widget\Datagrid\TDataGridColumn;
+use Adianti\Wrapper\BootstrapDatagridWrapper;
 
 /**
  * FormShowHideRowsView
@@ -16,6 +21,7 @@ use Adianti\Widget\Form\TRadioGroup;
 class CheckoutPDV extends TWindow
 {
     private $form;
+    private $detail_list;
     
     /**
      * Class constructor
@@ -63,6 +69,69 @@ class CheckoutPDV extends TWindow
         
         // add the fields inside the form
         $this->form->addFields( [$type] );
+
+
+
+        //detalhes do item comprados
+
+        $this->detail_list = new BootstrapDatagridWrapper( new TDataGrid );
+        $this->detail_list->style = 'width:100%';
+        $this->detail_list->disableDefaultClick();
+        
+        $product       = new TDataGridColumn('description',  'Desc', 'left');
+        $price         = new TDataGridColumn('sale_price',  'valor',    'right');
+        $amount        = new TDataGridColumn('amount',  'qtd',    'center');
+       
+      //  $total         = new TDataGridColumn('total',  'Total',    'right');
+        
+        $this->detail_list->addColumn( $product );
+        $this->detail_list->addColumn( $amount );
+        $this->detail_list->addColumn( $price );
+      
+       
+      //  $this->detail_list->addColumn( $total );
+        
+        $format_value = function($value) {
+            if (is_numeric($value)) {
+                return 'R$ '.number_format($value, 2, ',', '.');
+            }
+            return $value;
+        };
+        
+        $price->setTransformer($format_value);
+        
+        // define totals
+        $price->setTotalFunction( function($values) {
+            return array_sum((array) $values);
+        });
+        
+        $this->detail_list->createModel();
+        $cart_items = TSession::getValue('cart_items');
+       
+            TTransaction::open('samples');
+            $this->detail_list->clear();
+            foreach ($cart_items as $id => $amount)
+            {
+                $product = new Product($id);
+                
+                $item = new StdClass;
+               // $item->id          = $product->id;
+                $item->description = $product->description;
+                $item->amount      = $amount;
+                $item->sale_price  = $amount * $product->sale_price;
+                
+                $this->detail_list->addItem( $item );
+            }
+            TTransaction::close();
+      
+        
+        $panel = new TPanelGroup('', '#f5f5f5');
+        $panel->add($this->detail_list);
+        $panel->{'name'} = 'itens';
+        $panel->getBody()->style = 'overflow-x:auto';
+        
+         $this->form->addContent([$panel]);
+       
    
         // wrap the page content using vertical box
         $vbox = new TVBox;
@@ -78,19 +147,17 @@ class CheckoutPDV extends TWindow
      */
     public static function onChangeType($param)
     {
-        if ($param['type'] == 'p')
+        if ($param['type'] == '1')
         {
-            TQuickForm::showField('form_show_hide', 'item_price');
-            TQuickForm::showField('form_show_hide', 'units');
-            TQuickForm::hideField('form_show_hide', 'hour_price');
-            TQuickForm::hideField('form_show_hide', 'hours');
+            TQuickForm::showField('form_checkout', 'itens');
+        
+          //  TQuickForm::hideField('form_checkout', 'itens');
+         
         }
         else
         {
-            TQuickForm::hideField('form_show_hide', 'item_price');
-            TQuickForm::hideField('form_show_hide', 'units');
-            TQuickForm::showField('form_show_hide', 'hour_price');
-            TQuickForm::showField('form_show_hide', 'hours');
+            TQuickForm::hideField('form_checkout', 'itens');
+       
         }
     }
 }

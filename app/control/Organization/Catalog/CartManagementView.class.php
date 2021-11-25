@@ -206,6 +206,8 @@ class CartManagementView extends TPage
 
         new TMessage('info', 'Itens apagados com sucesso!');
         TSession::delValue('cart_items');
+        $itens = 0;
+        TScript::create("$( '#carrinho' ).html( '{$itens}' );");
         AdiantiCoreApplication::loadPage('ProductCatalogView', '', [ 'register_state' => 'false']);
     }
 }

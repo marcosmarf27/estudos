@@ -76,7 +76,7 @@ class ProductCatalogView extends TPage
       <p class="card-text"> R$ {sale_price}</p>
 
      
-      <a generator="adianti" href="index.php?class=ProductCatalogView&method=onSelect&id={id}" class="btn btn-primary">+ adicionar</a>
+      <a generator="adianti" href="index.php?class=ProductCatalogView&method=onSelect&id={id}&register_state=false" class="btn btn-primary">+ adicionar</a>
     </div>
   </div>');
         

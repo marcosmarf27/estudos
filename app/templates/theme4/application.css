@@ -1436,19 +1436,14 @@ body .main-footer{
 	letter-spacing:1.6px;
 }
 
-table.table>tfoot.tdatagrid_footer>tr>td{
-	font-size:18px;
-	background-color:#4caf50 !important;
-}
 
 
 
 
 
 
-table.table>tfoot.tdatagrid_footer>tr>td{
-	background-color:#ff9800 !important;
-}
+
+
 
 .spin-up .fa-plus-square{
 	color:#ff9800 !important;
@@ -1472,6 +1467,14 @@ a#cancelar .fa-window-close{
 	bottom:-14px;
 	position:relative;
 }
+
+
+
+.btn-group .btn.btn-default.active{
+	background-color:#ff9800 !important;
+}
+
+
 
 
 
