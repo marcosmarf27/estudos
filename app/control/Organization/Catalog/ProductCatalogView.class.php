@@ -43,7 +43,7 @@ class ProductCatalogView extends TPage
         $description = new TEntry('description');
         TTransaction::open('samples');
 
-        $products = Product::getIndexedArray('key:{id}', '{description} <b>R$ {sale_price}</b>');
+        $products = Product::getIndexedArray('{id}', '{description}');
         $description->setCompletion( array_values( $products ));
         $description->setSize('100%');
         $description->placeholder = 'Pesquise aqui...';
