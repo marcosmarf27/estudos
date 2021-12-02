@@ -22,10 +22,10 @@ class StepView extends TPage
         parent::__construct();
         
         $this->step = new TPageStep;
-        $this->step->addItem('Step 1', new TAction(['CustomerDataGridView', 'onReload']));
-        $this->step->addItem('Step 2');
-        $this->step->addItem('Step 3');
-        $this->step->select('Step 2');
+        $this->step->addItem('Cadastro', new TAction(['CustomerDataGridView', 'onReload']), '<i class="fas fa-address-card"></i>');
+        $this->step->addItem('Endereço','', '<i class="fas fa-map-marked-alt"></i>');
+        $this->step->addItem('Pagamento', '', '<i class="far fa-credit-card"></i>');
+       $this->step->select('Endereço');
         
         // wrap the page content using vertical box
         $vbox = new TVBox;
