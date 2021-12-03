@@ -190,3 +190,5 @@ $( document ).on( 'click', 'ul.dropdown-menu a[generator="adianti"]', function()
     $(this).parents(".dropdown.show").removeClass("show");
     $(this).parents(".dropdown-menu.show").removeClass("show");
 });
+
+
